@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reverseproxy
+  labels:
+    app: reverseproxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reverseproxy
+  template:
+    metadata:
+      labels:
+        app: reverseproxy
+    spec:
+      containers:
+      - name: reverseproxy
+        image: ahmedelsherbini/reverseproxy
+        
+        ports:
+          - containerPort: 8080
+        env: 
+          - name: POSTGRES_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: POSTGRES_HOST
+          - name: POSTGRES_DB
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: POSTGRES_DB
+          - name: AWS_BUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: AWS_BUCKET
+          - name: AWS_REGION
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: AWS_REGION
+          - name: JWT_SECRET
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: JWT_SECRET
+          - name: URL
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: URL
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: POSTGRES_PASSWORD
+          - name: POSTGRES_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: my-secret
+                key: POSTGRES_USERNAME
+          - name: AWS_PROFILE
+            valueFrom:
+              configMapKeyRef:
+                name: app-properties
+                key: AWS_PROFILE  
